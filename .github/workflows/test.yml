@@ -24,7 +24,7 @@ jobs:
     - id: 'deploy'
       uses: 'google-github-actions/deploy-cloud-functions@v1'
       with:
-        name: 'test'
+        name: 'voice-to-text'
         entry_point: 'trigger'
         project_id: 'amocsub'
         region: 'europe-west1'
@@ -32,7 +32,3 @@ jobs:
         ingress_settings: 'ALLOW_ALL'
         min_instances: 0
         max_instances: 5
-
-
-    - id: 'test'
-      run: 'curl "${{ steps.deploy.outputs.url }}"'

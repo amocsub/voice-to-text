@@ -1,16 +1,20 @@
+import tempfile
+from pydub import AudioSegment
+from uuid import uuid1
+import os
+import openai
+
 def trigger(request):
-    """Responds to any HTTP request.
-    Args:
-        request (flask.Request): HTTP request object.
-    Returns:
-        The response text or any set of values that can be turned into a
-        Response object using
-        `make_response <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>`.
-    """
-    request_json = request.get_json()
-    if request.args and 'message' in request.args:
-        return request.args.get('message')
-    elif request_json and 'message' in request_json:
-        return request_json['message']
-    else:
-        return 'Hello World!'
+    if 'file' not in request.files:
+        return 'No file found in the request.'
+    request_file = request.files['file']
+    temp_dir = tempfile.mkdtemp()
+    file_name = str(uuid1())
+    temp_file = os.path.join(temp_dir, file_name)
+    request_file.save(temp_file)
+    audio = AudioSegment.from_file(temp_file)
+    output_file = os.path.join(temp_dir, file_name+'output.mp3')
+    audio.export(output_file, format='mp3')
+    audio_file= open(output_file, "rb")
+    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+    return transcript
