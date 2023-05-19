@@ -1,3 +1,11 @@
+name: Deploy to GCF
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+
 jobs:
   job_id:
     permissions:
