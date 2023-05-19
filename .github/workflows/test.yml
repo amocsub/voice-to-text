@@ -1,0 +1,29 @@
+jobs:
+  job_id:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/1015288895093/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+        service_account: 'github-actions@amocsub.iam.gserviceaccount.com'
+
+    - id: 'deploy'
+      uses: 'google-github-actions/deploy-cloud-functions@v1'
+      with:
+        name: 'test'
+        entry_point: 'trigger'
+        project_id: 'amocsub'
+        runtime: 'python39'
+        ingress_settings: 'ALLOW_ALL'
+        min_instances: 0
+        max_instances: 5
+
+    - id: 'test'
+      run: 'curl "${{ steps.deploy.outputs.url }}"'
