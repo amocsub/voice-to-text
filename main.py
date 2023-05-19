@@ -16,5 +16,6 @@ def trigger(request):
     output_file = os.path.join(temp_dir, file_name+'output.mp3')
     audio.export(output_file, format='mp3')
     audio_file= open(output_file, "rb")
+    openai.api_key = os.getenv("OPENAI_API_KEY")
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
     return transcript
