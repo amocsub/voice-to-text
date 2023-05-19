@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'releases/**'
 
 jobs:
   job_id:
@@ -28,10 +27,12 @@ jobs:
         name: 'test'
         entry_point: 'trigger'
         project_id: 'amocsub'
+        region: 'europe-west1'
         runtime: 'python39'
         ingress_settings: 'ALLOW_ALL'
         min_instances: 0
         max_instances: 5
+
 
     - id: 'test'
       run: 'curl "${{ steps.deploy.outputs.url }}"'
